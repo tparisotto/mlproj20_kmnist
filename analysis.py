@@ -32,9 +32,9 @@ cov_mat = np.cov(X_train_flat.T)
 eig_vals, eig_vecs = np.linalg.eig(cov_mat)
 # print('Eigenvectors \n', eig_vecs)
 # print('\nEigenvalues \n', eig_vals)
-X_train_std = preprocessing.StandardScaler().fit_transform(X_train_flat)
-cov_mat_std = np.cov(X_train_std.T)
-eig_vals_std, eig_vecs_std = np.linalg.eig(cov_mat_std)
+# X_train_std = preprocessing.StandardScaler().fit_transform(X_train_flat)
+# cov_mat_std = np.cov(X_train_std.T)
+# eig_vals_std, eig_vecs_std = np.linalg.eig(cov_mat_std)
 # print('\nStandardized Eigenvectors \n', eig_vecs_std)
 # print('\nStandardized Eigenvalues \n', eig_vals_std)
 
@@ -48,39 +48,37 @@ eig_vals_std, eig_vecs_std = np.linalg.eig(cov_mat_std)
 # plt.show()
 # plt.waitforbuttonpress()
 
-trace = np.trace(cov_mat_std)
-variance_percentage = eig_vals_std / trace
-n_features = X_train_flat.shape[1]
+# trace = np.trace(cov_mat_std)
+# variance_percentage = eig_vals_std / trace
+# n_features = X_train_flat.shape[1]
 
-sorted_percentage = [0]
-for k in range(n_features):
-  pc_idx = variance_percentage.argsort()[-(k+1):][::-1]
-  first_k_vars = sum(variance_percentage[pc_idx])
-  sorted_percentage.append(first_k_vars)
-# print("How many variables we need?\n",sorted_percentage)
-# plt.figure(figsize=(16,6))
-plt.plot(range(n_features+1),sorted_percentage)
-plt.xlabel("Number of Variables")
-plt.ylabel("Cumulative Variance Percentage")
-plt.grid()
-# plt.axhline(y=0.99, color='r', linestyle='-')
-plt.show()
-plt.waitforbuttonpress()
+# sorted_percentage = [0]
+# for k in range(n_features):
+#   pc_idx = variance_percentage.argsort()[-(k+1):][::-1]
+#   first_k_vars = sum(variance_percentage[pc_idx])
+#   sorted_percentage.append(first_k_vars)
+# # print("How many variables we need?\n",sorted_percentage)
+# # plt.figure(figsize=(16,6))
+# plt.plot(range(n_features+1),sorted_percentage)
+# plt.xlabel("Number of Variables")
+# plt.ylabel("Cumulative Variance Percentage")
+# plt.grid()
+# # plt.axhline(y=0.99, color='r', linestyle='-')
+# plt.show()
+# plt.waitforbuttonpress()
 
-# subsampling_factors = [0.1, 0.3, 0.5, 0.7, 0.9]
-# data_sizes = []
-# scores = []
+subsampling_factors = [0.01]
+data_sizes = []
+scores = []
 
-# for factor in subsampling_factors:
-#   dim = int(factor*len(X_train_std))
-#   X_train_norm = pd.DataFrame(preprocessing.normalize(X_train_std))
-#   X = X_train_norm.sample(n=dim)
-#   pca = PCA(n_components=550)
-#   X = pca.fit_transform(X)
-#   data_sizes.append(dim)
-#   H = hopkins(X, dim)
-#   scores.append(1 - H)
+for factor in subsampling_factors:
+  dim = int(factor*len(X_train_flat))
+  X = pd.DataFrame(X_train_flat)
+  X = X.sample(n=dim)
+  data_sizes.append(dim)
+  H = hopkins(X, dim)
+  scores.append(1 - H)
   
-# results = pd.DataFrame({"Subsampling Factors" : subsampling_factors, "Number of samples" : data_sizes, "Scores" : scores})
-# print("Hopkins statistic for Standardized + Normalized + PCA'ed data")
-# print(results)
+results = pd.DataFrame({"Subsampling Factors" : subsampling_factors, "Number of samples" : data_sizes, "Scores" : scores})
+print("Hopkins statistic for PCA reduced data")
+print(results)
