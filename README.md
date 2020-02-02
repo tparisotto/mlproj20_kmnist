@@ -1,4 +1,4 @@
-<h1>Machine Learning Project 2019/2020<h1>
+# Machine Learning Project 2019/2020
 
 The code is a series of classifiers which i have commented to avoid running them all at once, to experiment with a classifier uncomment its section and run:
 '''
